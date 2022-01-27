@@ -1,0 +1,217 @@
+---
+Language:        Cpp
+# BasedOnStyle:  LLVM
+# Last updated: 28-Dec-2021
+# See Clang-Format Style Options @ https://releases.llvm.org/12.0.1/tools/clang/docs/ClangFormatStyleOptions.html
+# The key:value pairs were baselined with clang-format version 12.0.0 using
+#   clang-format -style=LLVM  -dump-config
+AccessModifierOffset: -2
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: AcrossEmptyLines
+AlignConsecutiveAssignments: AcrossEmptyLines
+AlignConsecutiveBitFields: AcrossEmptyLines
+AlignConsecutiveDeclarations: AcrossEmptyLines
+AlignEscapedNewlines: Left
+AlignOperands:   AlignAfterOperator
+AlignTrailingComments: true
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortEnumsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+AttributeMacros:
+  - __capability
+  - __output
+  - __ununsed
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel:  true
+  AfterClass:      true
+  AfterControlStatement: Always
+  AfterEnum:       false
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: false
+  AfterStruct:     true
+  AfterUnion:      true
+  AfterExternBlock: true
+  BeforeCatch:     true
+  BeforeElse:      true
+  BeforeLambdaBody: true
+  BeforeWhile:     false
+  IndentBraces:    false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeConceptDeclarations: true
+BreakBeforeInheritanceComma: false
+BreakInheritanceList: BeforeColon
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializers: BeforeColon
+BreakAfterJavaFieldAnnotations: false
+BreakStringLiterals: true
+ColumnLimit:     0
+CommentPragmas:  '^ IWYU pragma:'
+CompactNamespaces: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: true
+DeriveLineEnding: true
+DerivePointerAlignment: false
+DisableFormat:   false
+EmptyLineBeforeAccessModifier: LogicalBlock
+# ExperimentalAutoDetectBinPacking: false # NOTE: This is an experimental flag, that might go away or be renamed. Do not use this in config files, etc. Use at your own risk.
+FixNamespaceComments: true
+ForEachMacros:
+  - foreach
+  - Q_FOREACH
+  - BOOST_FOREACH
+IncludeBlocks:   Regroup
+IncludeCategories:
+  - Regex:           '^<.*'
+    Priority:        1
+# '^".*/.*' will sort all the subdirectory includes just fine.  But I wanted to group (put a plank line between) the groups of subdirectory includes.
+# Note that includes with no subdirectories (way at the bottom) come first
+  - Regex:           '^"A.*/.*'
+    Priority:        3
+  - Regex:           '^"B.*/.*'
+    Priority:        4
+  - Regex:           '^"C.*/.*'
+    Priority:        5
+  - Regex:           '^"D.*/.*'
+    Priority:        6
+  - Regex:           '^"E.*/.*'
+    Priority:        7
+  - Regex:           '^"F.*/.*'
+    Priority:        8
+  - Regex:           '^"G.*/.*'
+    Priority:        9
+  - Regex:           '^"H.*/.*'
+    Priority:        10
+  - Regex:           '^"I.*/.*'
+    Priority:        11
+  - Regex:           '^"J.*/.*'
+    Priority:        12
+  - Regex:           '^"K.*/.*'
+    Priority:        13
+  - Regex:           '^"L.*/.*'
+    Priority:        14
+  - Regex:           '^"M*/.*'
+    Priority:        15
+  - Regex:           '^"N*/.*'
+    Priority:        16
+  - Regex:           '^"O.*/.*'
+    Priority:        17
+  - Regex:           '^"P.*/.*'
+    Priority:        18
+  - Regex:           '^"Q.*/.*'
+    Priority:        19
+  - Regex:           '^"R.*/.*'
+    Priority:        20
+  - Regex:           '^"S.*/.*'
+    Priority:        21
+  - Regex:           '^"T.*/.*'
+    Priority:        22
+  - Regex:           '^"U.*/.*'
+    Priority:        23
+  - Regex:           '^"V.*/.*'
+    Priority:        24
+  - Regex:           '^"W.*/.*'
+    Priority:        25
+  - Regex:           '^"X.*/.*'
+    Priority:        26
+  - Regex:           '^"Y.*/.*'
+    Priority:        27
+  - Regex:           '^"Z.*/.*'
+    Priority:        28
+# This one has to come after the above.  The first regular expression that matches determines the include file's group, and this matches everything starting with a quote
+  - Regex:           '^".*'
+    Priority:        2
+IncludeIsMainRegex:  '-'
+IncludeIsMainSourceRegex: ''
+IndentCaseLabels: true
+IndentCaseBlocks: true
+IndentGotoLabels: true
+IndentPPDirectives: BeforeHash
+IndentExternBlock: AfterExternBlock
+IndentRequires:  false
+IndentWidth:     2
+IndentWrappedFunctionNames: false
+InsertTrailingCommas: None
+JavaScriptQuotes: Leave
+JavaScriptWrapImports: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+MacroBlockBegin: ''
+MacroBlockEnd:   ''
+MaxEmptyLinesToKeep: 15
+NamespaceIndentation: All
+ObjCBinPackProtocolList: Auto
+ObjCBlockIndentWidth: 2
+ObjCBreakBeforeNestedBlockParam: true
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyBreakTemplateDeclaration: 10
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+PenaltyIndentedWhitespace: 0
+PointerAlignment: Middle
+ReflowComments:  false
+SortIncludes:    true
+SortJavaStaticImport: Before
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: Never # ControlStatements
+SpaceAroundPointerQualifiers: Default
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 4
+SpacesInAngles:  false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: true
+SpacesInSquareBrackets: false
+SpaceBeforeSquareBrackets: false
+BitFieldColonSpacing: Both
+Standard:        Latest
+StatementMacros:
+  - Q_UNUSED
+  - QT_REQUIRE_VERSION
+TabWidth:        8
+UseCRLF:         false
+UseTab:          Never
+WhitespaceSensitiveMacros:
+  - STRINGIZE
+  - PP_STRINGIZE
+  - BOOST_PP_STRINGIZE
+  - NS_SWIFT_NAME
+  - CF_SWIFT_NAME
+...
+
