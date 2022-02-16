@@ -9,18 +9,21 @@ let src = systemPkgs.fetchFromGitHub {
 
 	pkgs = import (src) {};
 
+	clang-unwrapped = pkgs.llvmPackages_latest.clang-unwrapped;
+	clang = pkgs.llvmPackages_latest.libstdcxxClang;
+
 	# clangd hack.
 	clangd = pkgs.writeScriptBin "clangd" ''
 	    #!${pkgs.stdenv.shell}
-		export CPATH="$(${pkgs.llvmPackages_latest.clang}/bin/clang -E - -v <<< "" \
+		export CPATH="$(${clang}/bin/clang -E - -v <<< "" \
 			|& ${pkgs.gnugrep}/bin/grep '^ /nix' \
 			|  ${pkgs.gawk}/bin/awk 'BEGIN{ORS=":"}{print substr($0, 2)}' \
 			|  ${pkgs.gnused}/bin/sed 's/:$//')"
-		export CPLUS_INCLUDE_PATH="$(${pkgs.llvmPackages_latest.clang}/bin/clang++ -E - -v <<< "" \
+		export CPLUS_INCLUDE_PATH="$(${clang}/bin/clang++ -E - -v <<< "" \
 			|& ${pkgs.gnugrep}/bin/grep '^ /nix' \
 			|  ${pkgs.gawk}/bin/awk 'BEGIN{ORS=":"}{print substr($0, 2)}' \
 			|  ${pkgs.gnused}/bin/sed 's/:$//')"
-	    ${pkgs.llvmPackages_latest.clang-unwrapped}/bin/clangd
+	    ${clang-unwrapped}/bin/clangd
 	'';
 
 	gccShell = pkgs.mkShell.override {
@@ -110,9 +113,11 @@ in gccShell {
 		cp -f ${writeText "compile_flags_g++.txt" gccFlags} $PROJECT_ROOT/
 	'';
 
-	buildInputs = [ clangd ] ++ (with pkgs; [
+	buildInputs = [
+		clang
+		clangd
+	] ++ (with pkgs; [
 		gcc11
-		llvmPackages_latest.clang
 
 		automake
 		autoconf
