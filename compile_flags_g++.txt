@@ -1,5 +1,5 @@
-		-g0
-		-O3
+		-g
+		-O1
 		-DNDEBUG
 		-pthread
 		-std=c++20
