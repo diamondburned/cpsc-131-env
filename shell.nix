@@ -9,8 +9,9 @@ let src = systemPkgs.fetchFromGitHub {
 
 	pkgs = import (src) {};
 
-	clang-unwrapped = pkgs.llvmPackages_latest.clang-unwrapped;
-	clang = pkgs.llvmPackages_latest.libstdcxxClang;
+	llvmPackages = pkgs.llvmPackages_13;
+	clang-unwrapped = llvmPackages.clang-unwrapped;
+	clang = llvmPackages.libstdcxxClang;
 
 	# clangd hack.
 	clangd = pkgs.writeScriptBin "clangd" ''
@@ -31,7 +32,8 @@ let src = systemPkgs.fetchFromGitHub {
 		stdenv = pkgs.gcc11Stdenv;
 	};
 
-	PROJECT_ROOT = builtins.toString ./.;
+	PROJECT_ROOT   = builtins.toString ./.;
+	PROJECT_SYSTEM = pkgs.system;
 
 	# Compliance_Workarounds is omitted because clang++ really doesn't want to
 	# see chrono::hh_mm_ss.
@@ -105,7 +107,7 @@ let src = systemPkgs.fetchFromGitHub {
 
 in gccShell {
 	# Poke a PWD hole for our shell scripts to utilize.
-	inherit PROJECT_ROOT;
+	inherit PROJECT_ROOT PROJECT_SYSTEM;
 
 	shellHook = ''
 		# Prepare the project directory environment.
