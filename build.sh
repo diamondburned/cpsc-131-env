@@ -6,7 +6,7 @@ flagfile() {
 }
 
 executableFileName=$(basename "$PWD")
-sourceFiles=( $(find ./ -path ./.\* -prune -o -name "*.cpp" -print) )
+IFS=$'\n' sourceFiles=( $(find ./ -path ./.\* -prune -o -name "*.cpp" -print) )
 
 [[ $PROJECT_SYSTEM != *"darwin" ]] &&
 	# TODO: check libcxx instead of OS. Linux might be libcxx too.
