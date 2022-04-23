@@ -1,7 +1,8 @@
 { systemPkgs ? import <nixpkgs> {} }:
 
-let pkgs =
-		if ((systemPkgs.llvmPackages_13 or null) != null)
+let lib  = systemPkgs.lib;
+	pkgs =
+		if (lib.versionAtLeast systemPkgs.llvmPackages_latest.release_version "13")
 		then systemPkgs
 		else import (systemPkgs.fetchFromGitHub {
 			owner = "NixOS";
@@ -10,9 +11,10 @@ let pkgs =
 			hash  = "sha256:0dcxc4yc2y5z08pmkmjws4ir0r2cbc5mha2a48bn0bk7nxc6wx8g";
 		});
 
-	llvmPackages = pkgs.llvmPackages_13;
+	llvmPackages = pkgs.llvmPackages_latest;
 	clang-unwrapped = llvmPackages.clang-unwrapped;
-	clang = llvmPackages.libstdcxxClang;
+	clang = llvmPackages.clang;
+	# clang = llvmPackages.libstdcxxClang;
 
 	# clangd hack.
 	clangd = pkgs.writeScriptBin "clangd" ''
@@ -154,8 +156,8 @@ in gccShell {
 	'';
 
 	buildInputs = [
-		clang
 		clangd
+		clang
 	] ++ (with pkgs; [
 		# Shell scripts.
 		(pkgs.writeShellScriptBin "build.sh" build_sh)
