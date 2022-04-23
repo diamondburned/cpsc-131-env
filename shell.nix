@@ -1,13 +1,14 @@
 { systemPkgs ? import <nixpkgs> {} }:
 
-let src = systemPkgs.fetchFromGitHub {
-		owner = "NixOS";
-		repo  = "nixpkgs";
-		rev   = "1882c6b";
-		hash  = "sha256:0zg7ak2mcmwzi2kg29g4v9fvbvs0viykjsg2pwaphm1fi13s7s0i";
-	};
-
-	pkgs = import (src) {};
+let pkgs =
+		if ((systemPkgs.llvmPackages_13 or null) != null)
+		then systemPkgs
+		else import (systemPkgs.fetchFromGitHub {
+			owner = "NixOS";
+			repo  = "nixpkgs";
+			rev   = "48d63e9";
+			hash  = "sha256:0dcxc4yc2y5z08pmkmjws4ir0r2cbc5mha2a48bn0bk7nxc6wx8g";
+		});
 
 	llvmPackages = pkgs.llvmPackages_13;
 	clang-unwrapped = llvmPackages.clang-unwrapped;
@@ -105,6 +106,43 @@ let src = systemPkgs.fetchFromGitHub {
 		let dst = pkgs.writeTextDir name text;
 		in "${dst}/${name}";
 
+	build_sh = ''
+		set -e
+
+		flagfile() {
+			tr $'\n' ' ' < "$PROJECT_ROOT/$1"
+		}
+
+		executableFileName=$(basename "$PWD")
+		readarray -t sourceFiles < <(find ./ -path ./.\* -prune -o -name "*.cpp" -print)
+
+		[[ $PROJECT_SYSTEM != *"darwin" ]] &&
+			# TODO: check libcxx instead of OS. Linux might be libcxx too.
+			clang++ \
+				$(flagfile compile_flags.txt) \
+				-o "''${executableFileName}_clang++" "''${sourceFiles[@]}"
+
+		g++ \
+			$(flagfile compile_flags_g++.txt) \
+			-o "''${executableFileName}_g++" "''${sourceFiles[@]}"
+	'';
+
+	clean_sh = ''
+		for exec in $(find ./ -path ./.\* -prune -o -print -executable); {
+			[[ $exec == *"_clang++" || $exec == *"_g++" ]] && {
+				echo rm "$exec"
+				rm "$exec"
+			}
+		}
+	'';
+
+	run_sh = ''
+		set -e
+
+		build.sh
+		"./$(basename "$PWD")_g++" | tee output.txt
+	'';
+
 in gccShell {
 	# Poke a PWD hole for our shell scripts to utilize.
 	inherit PROJECT_ROOT PROJECT_SYSTEM;
@@ -119,16 +157,23 @@ in gccShell {
 		clang
 		clangd
 	] ++ (with pkgs; [
-		gcc11
+		# Shell scripts.
+		(pkgs.writeShellScriptBin "build.sh" build_sh)
+		(pkgs.writeShellScriptBin "Build.sh" build_sh)
+		(pkgs.writeShellScriptBin "clean.sh" clean_sh)
+		(pkgs.writeShellScriptBin "Clean.sh" clean_sh)
+		(pkgs.writeShellScriptBin "run.sh"   run_sh)
+		(pkgs.writeShellScriptBin "Run.sh"   run_sh)
 
+		# Apparently we get a clang-format that doesn't fucking work. Using clang-format makes the
+		# autograder flag the assignment to an F. Brilliant! Fucking lovely!
+		(pkgs.writeShellScriptBin "clang-format" ''sed "s/\t/  /g"'')
+
+		gcc11
 		automake
 		autoconf
 		curl
+		gdb
 		git
-
-		# Shell scripts.
-		(pkgs.writeShellScriptBin "build.sh" (builtins.readFile ./build.sh))
-		(pkgs.writeShellScriptBin "Build.sh" (builtins.readFile ./build.sh))
-		(pkgs.writeShellScriptBin "clean.sh" (builtins.readFile ./clean.sh))
 	]);
 }
