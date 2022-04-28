@@ -155,10 +155,7 @@ in gccShell {
 		cp -f ${writeText "compile_flags_g++.txt" gccFlags} $PROJECT_ROOT/
 	'';
 
-	buildInputs = [
-		clangd
-		clang
-	] ++ (with pkgs; [
+	buildInputs = with pkgs; [
 		# Shell scripts.
 		(pkgs.writeShellScriptBin "build.sh" build_sh)
 		(pkgs.writeShellScriptBin "Build.sh" build_sh)
@@ -177,5 +174,8 @@ in gccShell {
 		curl
 		gdb
 		git
-	]);
+	] ++ [
+		clangd
+		clang
+	];
 }
