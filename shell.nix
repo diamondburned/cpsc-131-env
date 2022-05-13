@@ -5,7 +5,7 @@ let lib  = systemPkgs.lib;
 			owner = "NixOS";
 			repo  = "nixpkgs";
 			rev   = "41ff747f882914c1f8c233207ce280ac9d0c867f";
-			hatsh  = "sha256:1przm11d802bdrhxwsa620af9574fiqsl44yhqfci0arf5qsadij";
+			hash  = "sha256:1przm11d802bdrhxwsa620af9574fiqsl44yhqfci0arf5qsadij";
 		}) {};
 
 	llvmPackages = pkgs.llvmPackages_latest;
