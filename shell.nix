@@ -1,15 +1,12 @@
 { systemPkgs ? import <nixpkgs> {} }:
 
 let lib  = systemPkgs.lib;
-	pkgs =
-		if (lib.versionAtLeast systemPkgs.llvmPackages_latest.release_version "13")
-		then systemPkgs
-		else import (systemPkgs.fetchFromGitHub {
+	pkgs = import (systemPkgs.fetchFromGitHub {
 			owner = "NixOS";
 			repo  = "nixpkgs";
-			rev   = "48d63e9";
-			hash  = "sha256:0dcxc4yc2y5z08pmkmjws4ir0r2cbc5mha2a48bn0bk7nxc6wx8g";
-		});
+			rev   = "41ff747f882914c1f8c233207ce280ac9d0c867f";
+			hatsh  = "sha256:1przm11d802bdrhxwsa620af9574fiqsl44yhqfci0arf5qsadij";
+		}) {};
 
 	llvmPackages = pkgs.llvmPackages_latest;
 	clang-unwrapped = llvmPackages.clang-unwrapped;
@@ -38,11 +35,6 @@ let lib  = systemPkgs.lib;
 	PROJECT_ROOT   = builtins.toString ./.;
 	PROJECT_SYSTEM = pkgs.system;
 
-	# Compliance_Workarounds is omitted because clang++ really doesn't want to
-	# see chrono::hh_mm_ss.
-	#
-	#    -include ${PROJECT_ROOT}/Compliance_Workarounds.hpp
-
 	clangFlags = ''
 		-g
 		-O1
@@ -50,6 +42,7 @@ let lib  = systemPkgs.lib;
 		-pthread
 		-std=c++20
 		-I./
+		-include ${PROJECT_ROOT}/Compliance_Workarounds.hpp
 		-DUSING_TOMS_SUGGESTIONS
 		-D__func__=__PRETTY_FUNCTION__
 		-stdlib=libstdc++
@@ -80,6 +73,7 @@ let lib  = systemPkgs.lib;
 		-pthread
 		-std=c++20
 		-I./
+		-include ${PROJECT_ROOT}/Compliance_Workarounds.hpp
 		-DUSING_TOMS_SUGGESTIONS
 		-D__func__=__PRETTY_FUNCTION__
 		-Wall
@@ -166,7 +160,7 @@ in gccShell {
 
 		# Apparently we get a clang-format that doesn't fucking work. Using clang-format makes the
 		# autograder flag the assignment to an F. Brilliant! Fucking lovely!
-		(pkgs.writeShellScriptBin "clang-format" ''sed "s/\t/  /g"'')
+		(pkgs.writeShellScriptBin "clang-format" ''sed "s/\t/    /g"'')
 
 		gcc11
 		automake
