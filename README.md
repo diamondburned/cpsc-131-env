@@ -1,25 +1,18 @@
 # cpsc-131-env
 
-Nix shell environment for CPSC 131.
+Nix shell environment for CPSC-131, specifically T. Bettens' class.
 
 ## Usage
+
+Copy `shell.nix` to your project directory, then run
 
 ```sh
 nix-shell
 ```
 
-## Running
+To run, do `run.sh` in the shell.
 
-```sh
-run.sh
-```
+To build, do `build.sh` in the shell.
 
-This creates an `output.txt` at the current directory.
-
-## Cleaning
-
-```sh
-clean.sh
-```
-
-Optional. This cleans all the built binaries.
+To clean, do `clean.sh` in the shell. Cleaning is optional. It cleans all the
+built binaries.

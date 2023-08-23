@@ -1,14 +1,15 @@
 { systemPkgs ? import <nixpkgs> {} }:
 
-let lib  = systemPkgs.lib;
+let
+	lib  = systemPkgs.lib;
 	pkgs = import (systemPkgs.fetchFromGitHub {
-			owner = "NixOS";
-			repo  = "nixpkgs";
-			rev   = "41ff747f882914c1f8c233207ce280ac9d0c867f";
-			hash  = "sha256:1przm11d802bdrhxwsa620af9574fiqsl44yhqfci0arf5qsadij";
+			owner  = "NixOS";
+			repo   = "nixpkgs";
+			rev    = "3c13b0c82eaa9b490132413bb547e1bbf1402b3a";
+			sha256 = "sha256-wEIlVlZk5+DNnNjelEGOrUFeG43n+1SeL37MYjvl1Xg=";
 		}) {};
 
-	llvmPackages = pkgs.llvmPackages_latest;
+	llvmPackages = pkgs.llvmPackages_13;
 	clang-unwrapped = llvmPackages.clang-unwrapped;
 	clang = llvmPackages.clang;
 	# clang = llvmPackages.libstdcxxClang;
@@ -29,7 +30,7 @@ let lib  = systemPkgs.lib;
 
 	gccShell = pkgs.mkShell.override {
 		# Use gcc11 for our shell environment. We don't have a clang13Stdenv.
-		stdenv = pkgs.gcc11Stdenv;
+		stdenv = pkgs.gcc13Stdenv;
 	};
 
 	PROJECT_ROOT   = builtins.toString ./.;
@@ -98,6 +99,11 @@ let lib  = systemPkgs.lib;
 		-Wuseless-cast
 	'';
 
+	complianceWorkarounds = systemPkgs.fetchurl {
+		url = "https://raw.githubusercontent.com/diamondburned/cpsc-131-env/5b6d59ed57552e7291557306f63bf1d17e44a767/Compliance_Workarounds.hpp";
+		sha256 = "sha256-VP42u6jFOdQYawEKPSiS9OzBFkFcO9pP6+0oDIdn1Q0=";
+	};
+
 	writeText = name: text:
 		let dst = pkgs.writeTextDir name text;
 		in "${dst}/${name}";
@@ -145,8 +151,9 @@ in gccShell {
 
 	shellHook = ''
 		# Prepare the project directory environment.
-		cp -f ${writeText "compile_flags.txt" clangFlags} $PROJECT_ROOT/
-		cp -f ${writeText "compile_flags_g++.txt" gccFlags} $PROJECT_ROOT/
+		cp -n ${writeText "compile_flags.txt" clangFlags} $PROJECT_ROOT/
+		cp -n ${writeText "compile_flags_g++.txt" gccFlags} $PROJECT_ROOT/
+		cp -n ${complianceWorkarounds} $PROJECT_ROOT/Compliance_Workarounds.hpp
 	'';
 
 	buildInputs = with pkgs; [
@@ -160,14 +167,13 @@ in gccShell {
 
 		# Apparently we get a clang-format that doesn't fucking work. Using clang-format makes the
 		# autograder flag the assignment to an F. Brilliant! Fucking lovely!
-		(pkgs.writeShellScriptBin "clang-format" ''sed "s/\t/    /g"'')
+		(pkgs.writeShellScriptBin "clang-format" "")
 
-		gcc11
 		automake
 		autoconf
 		curl
-		gdb
 		git
+		lldb
 	] ++ [
 		clangd
 		clang
